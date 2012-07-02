@@ -9,6 +9,7 @@ I thinks it's a great example to learn the iOS SDK and an even better, method to
 There is a xcode project 'shadow' which  contains respectively the XIB files for each UIViewControllers, this should facilitate customizing the UI for the app.
 
 ###Screenshot
+
 ![screenshot](http://d3j5vwomefv46c.cloudfront.net/photos/full/609368921.png?key=1280800&Expires=1341259712&Key-Pair-Id=APKAIYVGSUJFNRFZBBTA&Signature=ulfNdhCxiwkvHkar6WCfaZtCd~1iMhUa1UYoIdEtmBPsDFwjfCoBe6KoXO4cizE6D7IC5-ZaPxv7oO9q3EYb7GKftzf2kOHk2s2RRb6oBv14qwTGWJnVMhIkBK7OjYiExDr98EKpBnZuI2XGcaERbDl1umVi3IGvuPXVU5pn8aU_ "Screenshot")
 
 ###Thanks
