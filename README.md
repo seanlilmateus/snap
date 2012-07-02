@@ -1,7 +1,7 @@
 #Snap!
 ###How To Make a Simple iPhone Playing Card Game with Multiplayer and Bluetooth
 Snap! is an example game by Matthijs Hollemans ([@mhollemans](http://twitter.com/#!/mhollemans/)). it's a part of tutorials on [www.raywenderlich.com](http://www.raywenderlich.com/14618/how-to-make-a-simple-playing-card-game-with-multiplayer-and-bluetooth-intro-and-challenge) tutarials page. for more information goto the page. 
-This is only the implementation of the Part 1 of the tutorial, if you're really interested you can pick it from here, and keep following the tutorials and finalize the game.
+This is only the implementation of the Part 1, the tutorial still being updated. If you're really interested, you can pick it from here and keep following the tutorials and finalize the game.
 
 I thinks it's a great example to learn the iOS SDK and an even better, method to lern to read Objective-C to make great Rubymotions apps.
 
