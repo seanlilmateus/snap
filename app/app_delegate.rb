@@ -4,6 +4,8 @@ QuitReasonConnectionDropped = 1  	# communication failure with server
 QuitReasonUserQuit = 2           	# the user terminated the connection
 QuitReasonServerQuit =3        		# the server quit the game (on purpose)
 
+DEBUG = true
+
 class AppDelegate
   def application(application, didFinishLaunchingWithOptions:launch_opts)
     UIApplication.sharedApplication.setStatusBarHidden(true, withAnimation:UIStatusBarAnimationNone)
