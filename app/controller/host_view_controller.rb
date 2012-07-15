@@ -1,7 +1,9 @@
 class HostViewController < UIViewController
   attr_accessor :heading_label, :name_label, :name_text_field, :status_label, :table_view, :start_button
   attr_accessor :delegate
-  
+
+  CELL_ID = "HostCellIdentifier"
+
   def viewDidLoad
     super
     @heading_label.font   = GameTheme.snap_font(24.0)
@@ -19,9 +21,11 @@ class HostViewController < UIViewController
   
   def viewDidAppear(animated)
     super
-    @match_server ||= MatchServer.new.tap do |server|
+    @match_server ||= MatchServer.alloc.init.tap do |server|
       server.max_clients = 3
+      server.delegate = self
       server.startAcceptingConnectionsForSessionID(SESSION_ID)
+
       @name_text_field.placeholder = server.session.displayName
       @table_view.reloadData
     end
@@ -35,21 +39,56 @@ class HostViewController < UIViewController
   end
   
   def exit_action(sender)
-    @delegate.host_view_controller_did_cancel(self) if @delegate.respond_to?('host_view_controller_did_cancel:')
+    @quit_reason = QuitReasonUserQuit
+    @match_server.end_session
+    @delegate.hostViewControllerDidCancel(self) if @delegate.respond_to?('hostViewControllerDidCancel:')
   end
   
   # UITableViewDataSOurce
   def tableView(tv, numberOfRowsInSection:section)
-    0
+    @match_server ? @match_server.connected_clients_count : 0
   end
   
   def tableView(tv, cellForRowAtIndexPath:index_path)
-    nil
+    (tv.dequeueReusableCellWithIdentifier(CELL_ID) || PeerCell.alloc.initWithStyle(UITableViewCellStyleDefault, reuseIdentifier:CELL_ID))
+    .tap do |cell|
+      peer_id = @match_server.peerIDForConnectedClientAtIndex(index_path.row)
+      cell.textLabel.text = @match_server.displayNameForPeerID(peer_id)
+    end
   end
   
+  # UITableViewDelegate
+  def tableView(tv, willSelectRowAtIndexPath:index_path)
+    nil
+  end
+
   # UITextFieldDelegate
   def textFieldShouldReturn(tf)
     tf.resignFirstResponder
     false
+  end
+
+  # MatchServer Delegate
+  def matchServer(server, clientDidConnect:peer_id)
+    @table_view.reloadData
+  end
+
+  def matchmakingServer(server, clientDidDisconnect:peer_id)
+    @table_view.reloadData
+  end
+
+  def matchServerSessionDidEnd(server)
+    @match_server.delegate = nil
+    @match_server = nil
+    @table_view.reloadData
+    @delegate.hostViewController(self, didEndSessionWithReason:@quit_reason)
+  end
+
+  def matchServerNoNetwork(session)
+    @quit_reason = QuitReasonNoNetwork
+  end
+
+  def dealloc
+    NSLog("dealloc %@", self)
   end
 end

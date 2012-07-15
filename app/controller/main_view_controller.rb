@@ -116,12 +116,40 @@ class MainViewController < UIViewController
   end
   
   # HostViewControllerDelegate
-  def host_view_controller_did_cancel(controller)
+  def hostViewControllerDidCancel(controller)
     self.dismissViewControllerAnimated(false, completion:-> {})
+    controller.send :release
   end
   
+  def hostViewController(controller, didEndSessionWithReason:reason)
+    self.showNoNetworkAlert if reason == QuitReasonNoNetwork
+  end
+
   # JoinViewControllerDelegate
-  def join_view_controller_did_cancel(controller)
+  def joinViewControllerDidCancel(controller)
     self.dismissViewControllerAnimated(false, completion:-> {})
+    controller.send :release
+  end
+
+  def joinViewController(controller, didDisconnectWithReason:reason)
+    if reason == QuitReasonNoNetwork
+      self.showNoNetworkAlert
+    elsif reason == QuitReasonConnectionDropped
+      self.dismissViewControllerAnimated(false, completion:->{ self.showNoNetworkAlert })    
+    end
+  end
+
+  def showNoNetworkAlert
+    title = NSLocalizedString("No Network", "No network alert title")
+    msg = NSLocalizedString("To use multiplayer, please enable Bluetooth or Wi-Fi in your device's Settings.", "No network alert message")
+    cancel_btn = NSLocalizedString("OK", "Button: OK")
+    UIAlertView.alloc.initWithTitle(title, message:msg, delegate:nil, cancelButtonTitle:cancel_btn, otherButtonTitles:nil).show
+  end
+
+  def showDisconnectedAlert
+    title = NSLocalizedString("Disconnected", "Client disconnected alert title")
+    msg = NSLocalizedString("You were disconnected from the game.", "Client disconnected alert message")
+    cancel_btn = NSLocalizedString("OK", "Button: OK")
+    UIAlertView.alloc.initWithTitle(title, message:msg, delegate:nil, cancelButtonTitle:cancel_btn, otherButtonTitles:nil).show
   end
 end

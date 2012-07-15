@@ -1,4 +1,8 @@
 SESSION_ID = "Snap!"
+QuitReasonNoNetwork = 0         	# no Wi-Fi or Bluetooth
+QuitReasonConnectionDropped = 1  	# communication failure with server
+QuitReasonUserQuit = 2           	# the user terminated the connection
+QuitReasonServerQuit =3        		# the server quit the game (on purpose)
 
 class AppDelegate
   def application(application, didFinishLaunchingWithOptions:launch_opts)
