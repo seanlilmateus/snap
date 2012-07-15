@@ -1,5 +1,5 @@
- .*
- !/.gitignore
+.*
+!/.gitignore
 .repl_history
 build
 resources/*.nib
