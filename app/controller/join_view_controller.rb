@@ -1,17 +1,17 @@
 class JoinViewController < UIViewController
   
-  CELL_ID = "JoinCellIdentifier"
+  CELL_ID = "Cell_ID"
 
   attr_accessor :heading_label, :name_label, :name_text_field, :status_label, :table_view
   attr_accessor :wait_view, :wait_label, :delegate
 
   def viewDidLoad
     super
-    @heading_label.font   = GameTheme.snap_font(24.0)
-    @name_label.font      = GameTheme.snap_font(16.0)
-    @status_label.font    = GameTheme.snap_font(16.0)
-    @wait_label.font      = GameTheme.snap_font(18.0)
-    @name_text_field.font = GameTheme.snap_font(20.0)
+    @heading_label.font   = Game::Theme.snap_font(24.0)
+    @name_label.font      = Game::Theme.snap_font(16.0)
+    @status_label.font    = Game::Theme.snap_font(16.0)
+    @wait_label.font      = Game::Theme.snap_font(18.0)
+    @name_text_field.font = Game::Theme.snap_font(20.0)
     
     gesture_recognizer = UITapGestureRecognizer.alloc.initWithTarget(@name_text_field, action:'resignFirstResponder')
     gesture_recognizer.cancelsTouchesInView = false
@@ -27,6 +27,8 @@ class JoinViewController < UIViewController
   def viewDidAppear(animated)
     super
     @match_client ||= MatchClient.alloc.init.tap do |clt|
+      @quit_reason = QuitReasonConnectionDropped
+
       clt.delegate = self
       clt.startSearchingForServersWithSessionID(SESSION_ID)
 
@@ -87,12 +89,19 @@ class JoinViewController < UIViewController
     @delegate.joinViewController(self, didDisconnectWithReason:@quit_reason)
   end
 
+  def matchClient(client, didConnectToServer:peer_id)
+    name = @name_text_field.text.strip
+    name = @match_client.session.displayName if name.empty?
+
+    @delegate.joinViewController(self, startGameWithSession:@match_client.session, playerName:name,server:peer_id)
+  end
+
   def matchClientNoNetwork(client)
     @quit_reason = QuitReasonNoNetwork
   end
 
   def dealloc
-    NSLog("dealloc %@", self)
+    NSLog("dealloc %@", self) if DEBUG
   end
 
 end

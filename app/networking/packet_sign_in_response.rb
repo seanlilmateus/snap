@@ -2,20 +2,20 @@ class PacketSignInResponse < Packet
   attr_accessor :player_name
   
   def self.packetWithData(data)
-    count = nil
-    player_name = data.string_at_offset(PACKET_HEADER_SIZE, bytesRead:count)
-    self.packetWithPlayerName(player_name)
+    count = Pointer.new(:object)
+    name = data.string_offset(PACKET_HEADER_SIZE, bytesRead:count)
+    self.packetWithPlayerName(name)
   end
   
-  def self.packetWithPlayerName(player_name)
-    self.alloc.initWithPlayerName(player_name)
+  def self.packetWithPlayerName(name)
+    self.alloc.initWithPlayerName(name)
   end
   
-  def initWithPlayerName(player_name)
-    initWithType(SignInResponse).tap { @player_name = player_name }      
+  def initWithPlayerName(name)
+    initWithType(SignInResponse).tap { @player_name = name }
   end
   
   def add_playload_to_data(data)
-    data.append_string(data)
+    data.append_string(@player_name)
   end
 end

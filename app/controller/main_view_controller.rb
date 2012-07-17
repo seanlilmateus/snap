@@ -2,18 +2,22 @@ class MainViewController < UIViewController
   attr_accessor :s_imageview, :n_imageview,:a_imageview, :p_imageview,  :joker_imageview
   attr_accessor :host_game_button, :join_game_button, :single_player_game_button
   
+  def initWithNibName(nib_name, bundle:nib_bundle)
+    super.tap { @perform_animations = true }
+  end
+
   def viewDidLoad
-    GameTheme.snap_button(@host_game_button, @join_game_button, @single_player_game_button) # customize the buttons
+    Game::Theme.snap_button(@host_game_button, @join_game_button, @single_player_game_button) # customize the buttons
   end
   
   def viewWillAppear(animated)
     super
-    prepare_intro_animation
+    prepare_intro_animation if @perform_animations
   end
   
   def viewDidAppear(animated)
     super
-    perform_intro_animation
+    perform_intro_animation if @perform_animations
   end
   
   def shouldAutorotateToInterfaceOrientation(interface_orientation)
@@ -125,6 +129,14 @@ class MainViewController < UIViewController
     self.showNoNetworkAlert if reason == QuitReasonNoNetwork
   end
 
+  def hostViewController(controller, startGameWithSession:session, playerName:name, clients:clients)
+    @perform_animations = false
+    self.dismissViewControllerAnimated(false, completion:-> {
+      @perform_animations = true
+      start_game { |game| game.startServerGameWithSession(session, playerName:name, clients:clients) }
+    })
+  end
+
   # JoinViewControllerDelegate
   def joinViewControllerDidCancel(controller)
     self.dismissViewControllerAnimated(false, completion:-> {})
@@ -135,8 +147,23 @@ class MainViewController < UIViewController
     if reason == QuitReasonNoNetwork
       self.showNoNetworkAlert
     elsif reason == QuitReasonConnectionDropped
-      self.dismissViewControllerAnimated(false, completion:->{ self.showNoNetworkAlert })    
+      self.dismissViewControllerAnimated(false, completion:->{ self.showNoNetworkAlert })
     end
+  end
+
+  def joinViewController(controller, startGameWithSession:session, playerName:name, server:peer_id)
+    @perform_animations = false
+    self.dismissViewControllerAnimated(false, completion:-> { 
+      @perform_animations = true
+      start_game { |game| game.startClientGameWithSession(session, playerName:name, server:peer_id) }
+    })
+  end
+
+  # GameViewControllerDelegate
+  def gameViewController(controller, didQuitWithReason:reason)
+    self.dismissViewControllerAnimated(false, completion:-> {
+      showDisconnectedAlert if reason == QuitReasonConnectionDropped
+    })
   end
 
   def showNoNetworkAlert
@@ -151,5 +178,20 @@ class MainViewController < UIViewController
     msg = NSLocalizedString("You were disconnected from the game.", "Client disconnected alert message")
     cancel_btn = NSLocalizedString("OK", "Button: OK")
     UIAlertView.alloc.initWithTitle(title, message:msg, delegate:nil, cancelButtonTitle:cancel_btn, otherButtonTitles:nil).show
+  end
+
+  def start_game
+    game_view_controller = GameViewController.alloc.initWithNibName("GameViewController", bundle:nil)
+    game_view_controller.delegate = self
+    self.presentViewController(game_view_controller, animated:false, completion:-> {
+      game = Game.alloc.init
+      game.delegate = game_view_controller
+      game_view_controller.game = game
+      yield game
+    })
+  end
+
+  def dealloc
+    NSLog("dealloc %@", self) if DEBUG
   end
 end

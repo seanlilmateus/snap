@@ -1,19 +1,13 @@
-module GameState
-  WaitingForSignIn = 0
-  WaitingForReady = 1
-  Dealing = 2
-  Playing = 3
-  GameOver = 4
-  Quitting = 5
-end
-
 class Game
-  include GameState
+  include Game::State
   attr_accessor :delegate
   
   def is_server?; @is_server; end
+
   def init
-    super.tap { @players = NSMutableDictionary.dictionaryWithCapacity(4) }
+    super
+    @players = NSMutableDictionary.dictionaryWithCapacity(4)
+    self
   end
   
   def dealloc
@@ -22,11 +16,10 @@ class Game
   
   def startClientGameWithSession(session, playerName:name, server:peer_id)
     @is_server = false
-    @session = session.tap do |sess|
-      sess.available = false
-      sess.delegate = self
-      sess.setDataReceiveHandler(self, withContext:nil)
-    end
+    @session = session
+    @session.available = false
+    @session.delegate = self
+    @session.setDataReceiveHandler(self, withContext:nil)
     
     @server_peer_id = peer_id
     @local_player_name = name
@@ -36,20 +29,20 @@ class Game
   
   def startServerGameWithSession(session, playerName:name, clients:clients)
     @is_server = true
-    @session = session.tap do |sess|
-      sess.available = false
-      sess.delegate = self
-      sess.setDataReceiveHandler(self, withContext:nil)
-    end
+    @session = session
+    @session.available = false
+    @session.delegate = self
+    @session.setDataReceiveHandler(self, withContext:nil)
+
     
     @state = WaitingForSignIn
     @delegate.gameWaitingForServerReady(self)
     
     # create the player object for the server
-    Player.alloc.init.tap do |plyr|
+    player = Player.alloc.init.tap do |plyr|
       plyr.name = name
-      plyr.peer_id = @session.peer_id
-      plyr.position = PlayerPosition::Bottom
+      plyr.peer_id = @session.peerID
+      plyr.position = Game::PlayerPosition::Bottom
     end
     @players[player.peer_id] = player
     
@@ -58,12 +51,12 @@ class Game
       player.peer_id = peer_id
       @players[player.peer_id] = player
       
-      player.position = if idx.zero? then clients.count == 1 ? PlayerPosition::Top : PlayerPosition::Left
-                        elsif idx == 1 then PlayerPosition::Top
-                        else PlayerPosition::Right
+      player.position = if idx.zero? then clients.count == 1 ? Game::PlayerPosition::Top : Game::PlayerPosition::Left
+                        elsif idx == 1 then Game::PlayerPosition::Top
+                        else Game::PlayerPosition::Right
                         end
     end
-    packet = Packet.packetWithType(SNAPPacketType::SignInRequest)
+    packet = Packet.packetWithType(Game::SNAPPacketType::SignInRequest)
     send_packet_to_all_clients(packet)
   end
   
@@ -78,11 +71,11 @@ class Game
   
   def client_received_packet(packet)
     case packet.type
-    when SNAPPacketType::SignInRequest
+    when Game::SNAPPacketType::SignInRequest
       if @state == WaitingForSignIn
         @state = WaitingForReady
         packet = PacketSignInResponse.packetWithPlayerName(@local_player_name)
-        self.send_packet_to_server(packet)
+        send_packet_to_server(packet)
       end
     else
 			NSLog("Client received unexpected packet: %@", packet)
@@ -90,8 +83,9 @@ class Game
   end
   
   def server_received_packet(packet, fromPlayer:player)
+    NSLog("Packet Type: %@", packet.type) 
     case packet.type
-    when SNAPPacketType::SignInResponse
+    when Game::SNAPPacketType::SignInResponse
       if @state == WaitingForSignIn
         player.name = packet.player_name
         NSLog("server received sign in from client '%@'", player.name)
@@ -125,7 +119,7 @@ class Game
   
   # GKSession Data Receive Handler
   def receiveData(data, fromPeer:peer_id, inSession:session, context:context)
-  	NSLog("Game: receive data from peer: %@, data: %@, length: %d", peer_id, data, data.length) if DEBUG
+  	NSLog("Game: receive data from peer: %@, data: %@, length: %@", peer_id, data, data.length) if DEBUG
     
     packet = Packet.packetWithData(data)
     if packet.nil?

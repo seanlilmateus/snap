@@ -1,14 +1,12 @@
 class MatchClient
-
-  ClientStateIdle = 0
-  ClientStateSearchingForServers = 1
-  ClientStateConnecting = 2
-  ClientStateConnected = 3
-
+  include Game::ClientState
+  
   attr_accessor :availables_servers, :session, :session_id, :client_state, :delegate
   
   def init
-    super.tap { @client_state = ClientStateIdle }
+    super
+    @client_state = ClientStateIdle
+    self
   end
 
   def startSearchingForServersWithSessionID(an_id)
@@ -24,7 +22,7 @@ class MatchClient
   end
   
   def connectToServerWithPeerID(peer_id)
-    @client_state == ClientStateConnecting
+    @client_state = ClientStateConnecting
     @server_peer_id = peer_id
     @session.connectToPeer(peer_id, withTimeout:@session.disconnectTimeout)
   end
@@ -33,7 +31,7 @@ class MatchClient
   def session(a_session, peer:peer_id, didChangeState:state)
     NSLog("#{self.class}: peer #{peer_id} changed state #{state}")
     case state
-      when GKPeerStateAvailable                   # The client has discovered a new server.
+      when GKPeerStateAvailable # The client has discovered a new server.
         if @client_state == ClientStateSearchingForServers
           unless @availables_servers.include?(peer_id)
             @availables_servers << peer_id
@@ -48,11 +46,14 @@ class MatchClient
           end
         end
         # Is this the server we're currently trying to connect with?
-        self.disconnectFromServer if @client_state == ClientStateConnecting and peer_id == @server_peer_id
+        self.disconnect_from_server if @client_state == ClientStateConnecting && peer_id == @server_peer_id
       when GKPeerStateConnected                   # You're now connected to the server.
-        @client_state = ClientStateConnected if @client_state == ClientStateConnecting
+        if @client_state == ClientStateConnecting
+          @client_state = ClientStateConnected
+          @delegate.matchClient(self, didConnectToServer:peer_id)
+        end
       when GKPeerStateDisconnected                # You're now no longer connected to the server.
-        self.disconnectFromServer if @client_state == ClientStateConnected
+        self.disconnect_from_server if @client_state == ClientStateConnected          
       when GKPeerStateConnecting then nil
     end
   end
@@ -63,7 +64,7 @@ class MatchClient
   
   def session(a_session, connectionWithPeerFailed:peer_id, withError:error)
     NSLog("#{self.class}: connection with peer #{peer_id} failed #{error}")
-    self.disconnectFromServer
+    self.disconnect_from_server
   end
   
   def session(a_session, didFailWithError:error)
@@ -71,7 +72,7 @@ class MatchClient
     if error.domain == GKSessionErrorDomain
       if error.code == GKSessionCannotEnableError
         @delegate.matchClientNoNetwork(self)
-        self.disconnectFromServer
+        self.disconnect_from_server
       end
     end
   end

@@ -19,6 +19,8 @@
 		4F699B8615A22E6100977544 /* HostViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4F699B8315A22E6100977544 /* HostViewController.xib */; };
 		4F699B8715A22E6100977544 /* JoinViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4F699B8415A22E6100977544 /* JoinViewController.xib */; };
 		4F699B8815A22E6100977544 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4F699B8515A22E6100977544 /* MainViewController.xib */; };
+		F64A036515B42B8400D6938E /* GameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F64A036315B42B8400D6938E /* GameViewController.m */; };
+		F64A036815B42C3000D6938E /* GameViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F64A036715B42C3000D6938E /* GameViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -80,6 +82,9 @@
 		4F699BAD15A22EDD00977544 /* TableViewBorder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "TableViewBorder@2x.png"; path = "../../resources/TableViewBorder@2x.png"; sourceTree = "<group>"; };
 		4F699BAE15A22EDD00977544 /* TextField.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = TextField.png; path = ../../resources/TextField.png; sourceTree = "<group>"; };
 		4F699BAF15A22EDD00977544 /* TextField@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "TextField@2x.png"; path = "../../resources/TextField@2x.png"; sourceTree = "<group>"; };
+		F64A036215B42B8400D6938E /* GameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameViewController.h; sourceTree = "<group>"; };
+		F64A036315B42B8400D6938E /* GameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameViewController.m; sourceTree = "<group>"; };
+		F64A036715B42C3000D6938E /* GameViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = GameViewController.xib; path = ../resources/GameViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,7 +104,10 @@
 		4F699B5415A22E1400977544 = {
 			isa = PBXGroup;
 			children = (
+				F64A036215B42B8400D6938E /* GameViewController.h */,
+				F64A036315B42B8400D6938E /* GameViewController.m */,
 				4F699B8315A22E6100977544 /* HostViewController.xib */,
+				F64A036715B42C3000D6938E /* GameViewController.xib */,
 				4F699B8415A22E6100977544 /* JoinViewController.xib */,
 				4F699B8515A22E6100977544 /* MainViewController.xib */,
 				4F699B7A15A22E3C00977544 /* HostViewController.m */,
@@ -247,6 +255,7 @@
 				4F699B8615A22E6100977544 /* HostViewController.xib in Resources */,
 				4F699B8715A22E6100977544 /* JoinViewController.xib in Resources */,
 				4F699B8815A22E6100977544 /* MainViewController.xib in Resources */,
+				F64A036815B42C3000D6938E /* GameViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -262,6 +271,7 @@
 				4F699B8015A22E3C00977544 /* HostViewController.m in Sources */,
 				4F699B8115A22E3C00977544 /* MainViewController.m in Sources */,
 				4F699B8215A22E3C00977544 /* JoinViewController.m in Sources */,
+				F64A036515B42B8400D6938E /* GameViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -365,6 +375,7 @@
 				4F699B7915A22E1A00977544 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -1,10 +1,3 @@
-module PlayerPosition
-  Bottom = :buttom
-  Left = :left
-  Top = :top
-  Right = :right
-end
-
 class Player
   attr_accessor :position, :name, :peer_id
   def dealloc

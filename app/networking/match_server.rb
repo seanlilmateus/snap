@@ -1,9 +1,5 @@
 class MatchServer
-
-  ServerStateIdle = 0
-  ServerStateAcceptingConnections = 1
-  ServerStateIgnoringNewConnections = 2
-
+  include Game::ServerState
   attr_accessor :max_clients, :connected_clients, :session, :session_id, :delegate
 
   def init
@@ -60,7 +56,7 @@ class MatchServer
   end
   
   def session(a_session, connectionWithPeerFailed:peer_id, withError:error)
-    NSLog("#{self.class}: connection with peer #{peer_id} failed #{error}")
+    NSLog("#{self.class}: connection with peer #{peer_id} failed #{error.description}")
   end
   
   def session(a_session, didFailWithError:error)
@@ -84,6 +80,11 @@ class MatchServer
 
   def displayNameForPeerID(peer_id)
     @session.displayNameForPeer(peer_id)
+  end
+
+  def stopAcceptingConnections
+    @server_state = ServerStateIgnoringNewConnections
+    @session.available = false  
   end
 
   def end_session
