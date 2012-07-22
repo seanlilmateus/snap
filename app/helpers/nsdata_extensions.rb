@@ -16,7 +16,7 @@ class NSData
 
 	def string_offset(offset, bytesRead:amount)
 		char_bytes = self.bytes.cast!('c')
-		string = NSString.stringWithUTF8String(char_bytes + offset) || "Mateus"
+		string = NSString.stringWithUTF8String(char_bytes + offset)# || "Mateus"
 		amount.assign(string.length + 1)
 		string
 	end

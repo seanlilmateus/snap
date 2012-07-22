@@ -27,25 +27,21 @@ class MainViewController < UIViewController
   def buttons_enabled?; @buttons_enabled; end
   
   def host_game(sender)
-    if buttons_enabled?
-      perform_exit_animation do |finished|
-        controller = HostViewController.alloc.initWithNibName("HostViewController", bundle:nil)
-        controller.delegate = self
+    perform_exit_animation do |finished|
+      controller = HostViewController.alloc.initWithNibName("HostViewController", bundle:nil)
+      controller.delegate = self
         
-        self.presentViewController(controller, animated:false, completion:->{})
-      end
-    end
+      self.presentViewController(controller, animated:false, completion:->{})
+    end if buttons_enabled?
   end
   
   def join_game(sender)
-    if buttons_enabled?
-      perform_exit_animation do |finished|
-        controller = JoinViewController.alloc.initWithNibName("JoinViewController", bundle:nil)
-        controller.delegate = self
+    perform_exit_animation do |finished|
+      controller = JoinViewController.alloc.initWithNibName("JoinViewController", bundle:nil)
+      controller.delegate = self
         
-        self.presentViewController(controller, animated:false, completion:->{})
-      end
-    end
+      self.presentViewController(controller, animated:false, completion:->{})
+    end if buttons_enabled?
   end
   
   def single_player_game(sender)
@@ -187,7 +183,7 @@ class MainViewController < UIViewController
       game = Game.alloc.init
       game.delegate = game_view_controller
       game_view_controller.game = game
-      yield game
+      yield(game) if block_given?
     })
   end
 

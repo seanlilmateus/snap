@@ -11,10 +11,9 @@ class MatchServer
     if @server_state = ServerStateIdle
       @server_state = ServerStateAcceptingConnections
       @connected_clients = NSMutableArray.arrayWithCapacity(@max_clients)
-      @session = GKSession.alloc.initWithSessionID(id,displayName:nil, sessionMode:GKSessionModeServer).tap do |gks|
-        gks.delegate = self
-        gks.available = true
-      end
+      @session = GKSession.alloc.initWithSessionID(id, displayName:nil, sessionMode:GKSessionModeServer)
+      @session.delegate = self
+      @session.available = true
     end
   end
   
@@ -22,22 +21,22 @@ class MatchServer
   def session(a_session, peer:peer_id, didChangeState:state)
     NSLog("#{self.class}: peer #{peer_id} changed state #{state}")
     case state
-      when GKPeerStateAvailable, GKPeerStateUnavailable then nil
-      when GKPeerStateConnected                       # A new client has connected to the server.
-        if @server_state == ServerStateAcceptingConnections
-          unless @connected_clients.include?(peer_id)
-            @connected_clients << peer_id
-            @delegate.matchServer(self, clientDidConnect:peer_id)
-          end
+    when GKPeerStateAvailable, GKPeerStateUnavailable then nil
+    when GKPeerStateConnected                       # A new client has connected to the server.
+      if @server_state == ServerStateAcceptingConnections
+        unless @connected_clients.include?(peer_id)
+          @connected_clients << peer_id
+          @delegate.matchServer(self, clientDidConnect:peer_id)
         end
-      when GKPeerStateDisconnected                    # A client has disconnected from the server.
-        unless @server_state == ServerStateIdle
-          if @connected_clients.include?(peer_id)
-            @connected_clients.delete(peer_id)
-            @delegate.matchServer(self, clientDidDisconnect:peer_id)
-          end
+      end
+    when GKPeerStateDisconnected                    # A client has disconnected from the server.
+      unless @server_state == ServerStateIdle
+        if @connected_clients.include?(peer_id)
+          @connected_clients.delete(peer_id)
+          @delegate.matchServer(self, clientDidDisconnect:peer_id)
         end
-      when GKPeerStateConnecting then nil
+      end
+    when GKPeerStateConnecting then nil
     end
   end
   

@@ -9,12 +9,12 @@ class Packet
   def self.packetWithData(data)
     def self.valid_data?(input_data)    
       if input_data.length < PACKET_HEADER_SIZE
-        NSLog("Error: Packet too small") ; true
+        NSLog("Error: Packet too small") 
+        true
       end
-    
-      ### must be checked for sure
       if input_data.int32_offset(0) != "SNAP".unpack('H*')[0].to_i(16)
-         NSLog("Error: Packet has invalid header") ; true 
+         NSLog("Error: Packet has invalid header")
+         true 
       end
     end
     
@@ -24,12 +24,12 @@ class Packet
     packet_type = data.int16_offset(8)
     
     packet = case packet_type 
-              when Game::SNAPPacketType::SignInRequest  then Packet.packetWithType(packet_type)
-              when Game::SNAPPacketType::SignInResponse then PacketSignInResponse.packetWithData(data)
-              else 
-          			NSLog("Error: Packet has invalid type")
+             when Game::SNAPPacketType::SignInRequest  then Packet.packetWithType(packet_type)
+             when Game::SNAPPacketType::SignInResponse then PacketSignInResponse.packetWithData(data)
+             else 
+          		  NSLog("Error: Packet has invalid type")
                 nil
-              end
+             end
   end
   
   def initWithType(type)
@@ -38,7 +38,7 @@ class Packet
   
   def data
     data = NSMutableData.alloc.initWithCapacity(100)
-    data.append_int32("SNAP".unpack('H*')[0].to_i(16))
+    data.append_int32('SNAP'.unpack('H*')[0].to_i(16))
     data.append_int32(0x0)
     data.append_int16(@type)
     

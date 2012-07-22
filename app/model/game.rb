@@ -3,7 +3,6 @@ class Game
   attr_accessor :delegate
   
   def is_server?; @is_server; end
-
   def init
     super
     @players = NSMutableDictionary.dictionaryWithCapacity(4)
@@ -39,11 +38,11 @@ class Game
     @delegate.gameWaitingForServerReady(self)
     
     # create the player object for the server
-    player = Player.alloc.init.tap do |plyr|
-      plyr.name = name
-      plyr.peer_id = @session.peerID
-      plyr.position = Game::PlayerPosition::Bottom
-    end
+    player = Player.alloc.init
+    player.name = name
+    player.peer_id = @session.peerID
+    player.position = Game::PlayerPosition::Bottom
+
     @players[player.peer_id] = player
     
     clients.each_with_index do |peer_id, idx|
@@ -56,6 +55,7 @@ class Game
                         else Game::PlayerPosition::Right
                         end
     end
+    
     packet = Packet.packetWithType(Game::SNAPPacketType::SignInRequest)
     send_packet_to_all_clients(packet)
   end

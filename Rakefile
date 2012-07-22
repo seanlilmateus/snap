@@ -14,7 +14,9 @@ Motion::Project::App.setup do |app|
   app.info_plist['UIRequiredDeviceCapabilities'] = ['armv7', 'peer-peer']
   app.info_plist['UILaunchImageFile'] = %w{Default.png Default@2x.png}
   
-  app.files_dependencies 'app/controller/main_view_controller.rb' => 'app/theme/game_theme.rb'
-  app.files_dependencies 'app/controller/host_view_controller.rb' => 'app/theme/game_theme.rb'
-  app.files_dependencies 'app/controller/join_view_controller.rb' => 'app/theme/game_theme.rb'
+  app.files_dependencies 'app/app_delegate.rb' => 'app/helpers/game_modules.rb'
+  app.files_dependencies 'app/controller/main_view_controller.rb' => 'app/helpers/game_modules.rb'
+  app.files_dependencies 'app/controller/host_view_controller.rb' => 'app/helpers/game_modules.rb'
+  app.files_dependencies 'app/controller/join_view_controller.rb' => 'app/helpers/game_modules.rb'
+  app.files_dependencies 'app/helpers/nsdata_extensions.rb' => 'app/helpers/game_modules.rb'
 end

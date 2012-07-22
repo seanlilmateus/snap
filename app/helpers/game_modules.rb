@@ -1,3 +1,11 @@
+SESSION_ID = "Snap!"
+QuitReasonNoNetwork = 0           # no Wi-Fi or Bluetooth
+QuitReasonConnectionDropped = 1   # communication failure with server
+QuitReasonUserQuit = 2            # the user terminated the connection
+QuitReasonServerQuit = 3          # the server quit the game (on purpose)
+
+DEBUG = true
+
 module Kernel
   # you could name this NSLocalizedString() for compatibility's sake
   def NSLocalizedString(default=nil, key)
@@ -77,7 +85,6 @@ module Game
     ServerQuit = 0x70         # server to client
     ClientQuit = 0x71         # server to client
   end
-
 
   class << self
     def ntohl(x)
