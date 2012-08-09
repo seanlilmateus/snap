@@ -1,5 +1,9 @@
 class Player
-  attr_accessor :position, :name, :peer_id
+  attr_accessor :position, :name, :peer_id, :received_response, :games_won
+  def init
+    super.tap { @games_won = 0 }
+  end
+  
   def dealloc
   	NSLog("dealloc %@", self) if DEBUG
   end

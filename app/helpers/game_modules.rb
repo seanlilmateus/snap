@@ -7,10 +7,13 @@ QuitReasonServerQuit = 3          # the server quit the game (on purpose)
 DEBUG = true
 
 module Kernel
-  # you could name this NSLocalizedString() for compatibility's sake
   def NSLocalizedString(default=nil, key)
     default ||= key
     NSBundle.mainBundle.localizedStringForKey(key, value:default, table:nil)
+  end
+
+  def NSAssert(condition, message ="Assertion on failed")
+    abort("#{caller}: #{message}") unless condition
   end
 end
 
@@ -58,10 +61,10 @@ module Game
   end
 
   module PlayerPosition
-    Bottom = :buttom
-    Left = :left
-    Top = :top
-    Right = :right
+    Bottom = 0
+    Left = 1
+    Top = 2
+    Right = 3
   end
 
   module SNAPPacketType

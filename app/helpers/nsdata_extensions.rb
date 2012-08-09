@@ -16,7 +16,7 @@ class NSData
 
 	def string_offset(offset, bytesRead:amount)
 		char_bytes = self.bytes.cast!('c')
-		string = NSString.stringWithUTF8String(char_bytes + offset)# || "Mateus"
+		string = NSString.stringWithUTF8String(char_bytes + offset)
 		amount.assign(string.length + 1)
 		string
 	end
@@ -42,11 +42,7 @@ class NSMutableData
 	end
 
 	def append_string(str)
-		value = str.UTF8String
-		ptr = Pointer.new(:string)
-		ptr.assign(value)
-		# data.appendData(value.to_data)
-		self.appendBytes(ptr, length:value.length+1)
+  		self.appendBytes(str.to_data.bytes, length:str.length + 1)
 	end
 end
 

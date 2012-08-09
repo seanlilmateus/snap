@@ -23,10 +23,16 @@ class Packet
     packet_num = data.int32_offset(4)
     packet_type = data.int16_offset(8)
     
-    packet = case packet_type 
-             when Game::SNAPPacketType::SignInRequest  then Packet.packetWithType(packet_type)
-             when Game::SNAPPacketType::SignInResponse then PacketSignInResponse.packetWithData(data)
-             else 
+    packet = case packet_type
+             when Game::SNAPPacketType::SignInRequest,
+                  Game::SNAPPacketType::ClientReady,
+                  Game::SNAPPacketType::ServerQuit,
+                  Game::SNAPPacketType::ClientQuit      then Packet.packetWithType(packet_type)
+             when Game::SNAPPacketType::SignInResponse  then PacketSignInResponse.packetWithData(data)
+             when Game::SNAPPacketType::ServerReady     then PacketServerReady.packetWithData(data)
+             when Game::SNAPPacketType::OtherClientQuit then PacketOtherClientQuit.packetWithData(data)
+             else
+                NSLog("Invalid Packet %@", input_data)
           		  NSLog("Error: Packet has invalid type")
                 nil
              end

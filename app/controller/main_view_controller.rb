@@ -118,7 +118,6 @@ class MainViewController < UIViewController
   # HostViewControllerDelegate
   def hostViewControllerDidCancel(controller)
     self.dismissViewControllerAnimated(false, completion:-> {})
-    controller.send :release
   end
   
   def hostViewController(controller, didEndSessionWithReason:reason)
@@ -136,7 +135,6 @@ class MainViewController < UIViewController
   # JoinViewControllerDelegate
   def joinViewControllerDidCancel(controller)
     self.dismissViewControllerAnimated(false, completion:-> {})
-    controller.send :release
   end
 
   def joinViewController(controller, didDisconnectWithReason:reason)
