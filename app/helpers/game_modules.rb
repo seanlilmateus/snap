@@ -24,7 +24,7 @@ module Game
         buttons.each do |button|
           button.titleLabel.font = snap_font(20.0)
           button_image = UIImage.imageNamed("Button").resizableImageWithCapInsets(UIEdgeInsetsMake(0, 15, 0, 15))
-          # stretchableImageWithLeftCapWidth(15, topCapHeight:0) we don't use this cause of deprecation
+          # stretchableImageWithLeftCapWidth(15, topCapHeight:0) we don't use this because of deprecation
           button.setBackgroundImage(button_image, forState:UIControlStateNormal)
     
           pressed_image = UIImage.imageNamed("ButtonPressed").resizableImageWithCapInsets(UIEdgeInsetsMake(0, 15, 0, 15))
