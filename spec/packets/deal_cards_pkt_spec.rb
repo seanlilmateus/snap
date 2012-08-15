@@ -1,11 +1,11 @@
 describe PacketDealCards do
   behaves_like Packet
   before do 
-    player = Player.alloc.init.tap do |plr| 
-              plr.peer_id = "Mattes"
-              plr.name = "Mattes" 
-              plr.position = TheGame::PlayerPosition::Bottom
-            end
+    player = Player.alloc.init
+    player.peer_id = "Mattes"
+    player.name = "Mattes" 
+    player.position = TheGame::PlayerPosition::Bottom
+
     deck = Deck.alloc.init
     deck.setup_cards
 

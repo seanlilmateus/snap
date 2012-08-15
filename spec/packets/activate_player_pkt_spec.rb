@@ -22,4 +22,3 @@ describe PacketActivatePlayer do
     @active_player_packet.data.should.be.a peer_id("Mattes")
   end
 end
-
