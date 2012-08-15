@@ -7,7 +7,7 @@ class MainViewController < UIViewController
   end
 
   def viewDidLoad
-    Game::Theme.snap_button(@host_game_button, @join_game_button, @single_player_game_button) # customize the buttons
+    TheGame::Theme.snap_button(@host_game_button, @join_game_button, @single_player_game_button) # customize the buttons
   end
   
   def viewWillAppear(animated)
@@ -141,7 +141,7 @@ class MainViewController < UIViewController
     if reason == QuitReasonNoNetwork
       self.showNoNetworkAlert
     elsif reason == QuitReasonConnectionDropped
-      self.dismissViewControllerAnimated(false, completion:->{ self.showNoNetworkAlert })
+      self.dismissViewControllerAnimated(false, completion:->{ self.showDisconnectedAlert })
     end
   end
 

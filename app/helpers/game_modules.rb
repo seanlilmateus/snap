@@ -4,8 +4,6 @@ QuitReasonConnectionDropped = 1   # communication failure with server
 QuitReasonUserQuit = 2            # the user terminated the connection
 QuitReasonServerQuit = 3          # the server quit the game (on purpose)
 
-DEBUG = true
-
 module Kernel
   def NSLocalizedString(default=nil, key)
     default ||= key
@@ -17,7 +15,7 @@ module Kernel
   end
 end
 
-module Game
+module TheGame
   module Theme
     class << self
       def snap_button(*buttons)
@@ -88,7 +86,19 @@ module Game
     ServerQuit = 0x70         # server to client
     ClientQuit = 0x71         # server to client
   end
-
+  
+  module Suit
+  	Clubs    = 0
+  	Diamonds = 1
+  	Hearts   = 2
+  	Spades   = 3
+    
+    CardAce    = 1
+    CardJack   = 11
+    CardQueen  = 12
+    CardKing   = 13
+  end
+  
   class << self
     def ntohl(x)
       [x].pack('N').unpack('L').first

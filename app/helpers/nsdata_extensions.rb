@@ -1,12 +1,12 @@
 class NSData
 	def int32_offset(offset)
 		int_bytes = self.bytes.cast!('i')
-		Game.ntohl(int_bytes[offset / 4])
+		TheGame.ntohl(int_bytes[offset / 4])
 	end
 
 	def int16_offset(offset)
 		short_bytes = self.bytes.cast!('s')
-		Game.ntohs(short_bytes[offset/2])
+		TheGame.ntohs(short_bytes[offset/2])
 	end
   
 	def int8_offset(offset)
@@ -25,13 +25,13 @@ end
 class NSMutableData
 	def append_int32(value)
 		ptr = Pointer.new(:int)
-		ptr.assign(Game.htonl(value))
+		ptr.assign(TheGame.htonl(value))
 		self.appendBytes(ptr, length:4)
 	end
 
 	def append_int16(value)
 		ptr = Pointer.new(:int)
-		ptr.assign(Game.htons(value))
+		ptr.assign(TheGame.htons(value))
 		self.appendBytes(ptr, length:2)
 	end
 

@@ -1,5 +1,5 @@
 class MatchServer
-  include Game::ServerState
+  include TheGame::ServerState
   attr_accessor :max_clients, :connected_clients, :session, :session_id, :delegate
 
   def init

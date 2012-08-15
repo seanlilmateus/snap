@@ -6,12 +6,12 @@ class HostViewController < UIViewController
 
   def viewDidLoad
     super
-    @heading_label.font   = Game::Theme.snap_font(24.0)
-    @name_label.font      = Game::Theme.snap_font(16.0)
-    @name_text_field.font = Game::Theme.snap_font(16.0)
-    @status_label.font    = Game::Theme.snap_font(20.0)
+    @heading_label.font   = TheGame::Theme.snap_font(24.0)
+    @name_label.font      = TheGame::Theme.snap_font(16.0)
+    @name_text_field.font = TheGame::Theme.snap_font(16.0)
+    @status_label.font    = TheGame::Theme.snap_font(20.0)
     
-    Game::Theme.snap_button(@start_button)
+    TheGame::Theme.snap_button(@start_button)
     
     gesture_recognizer = UITapGestureRecognizer.alloc.initWithTarget(@name_text_field, action:'resignFirstResponder')
     gesture_recognizer.cancelsTouchesInView = false
@@ -38,9 +38,7 @@ class HostViewController < UIViewController
   def start_action(sender)
     if (!@match_server.nil? and @match_server.connected_clients_count > 0)
       name = @name_text_field.text.strip
-
       NSLog("name: %@", name)
-
       name = @match_server.session.displayName if name.empty?
       @match_server.stopAcceptingConnections
       @delegate.hostViewController(self, startGameWithSession:@match_server.session, playerName:name, clients:@match_server.connected_clients)

@@ -1,5 +1,5 @@
 class Packet
-  include Game::SNAPPacketType
+  include TheGame::SNAPPacketType
   attr_accessor :type
   
   def self.packetWithType(type)
@@ -24,13 +24,16 @@ class Packet
     packet_type = data.int16_offset(8)
     
     packet = case packet_type
-             when Game::SNAPPacketType::SignInRequest,
-                  Game::SNAPPacketType::ClientReady,
-                  Game::SNAPPacketType::ServerQuit,
-                  Game::SNAPPacketType::ClientQuit      then Packet.packetWithType(packet_type)
-             when Game::SNAPPacketType::SignInResponse  then PacketSignInResponse.packetWithData(data)
-             when Game::SNAPPacketType::ServerReady     then PacketServerReady.packetWithData(data)
-             when Game::SNAPPacketType::OtherClientQuit then PacketOtherClientQuit.packetWithData(data)
+             when TheGame::SNAPPacketType::SignInRequest,
+                  TheGame::SNAPPacketType::ClientReady,
+                  TheGame::SNAPPacketType::ClientDealtCards,
+                  TheGame::SNAPPacketType::ServerQuit,
+                  TheGame::SNAPPacketType::ClientQuit      then Packet.packetWithType(packet_type)
+             when TheGame::SNAPPacketType::SignInResponse  then PacketSignInResponse.packetWithData(data)
+             when TheGame::SNAPPacketType::ServerReady     then PacketServerReady.packetWithData(data)
+             when TheGame::SNAPPacketType::OtherClientQuit then PacketOtherClientQuit.packetWithData(data)
+             when TheGame::SNAPPacketType::DealCards       then PacketDealCards.packetWithData(data)
+             when TheGame::SNAPPacketType::ActivatePlayer  then PacketActivatePlayer.packetWithData(data)
              else
                 NSLog("Invalid Packet %@", input_data)
           		  NSLog("Error: Packet has invalid type")
@@ -58,5 +61,41 @@ class Packet
   
   def description
     "type = #{@type}, #{super}"
+  end
+  
+  def addCards(cards, toPayload:data)
+    cards.each do |key, array|
+      data.append_string(key)
+      data.append_int8(array.count)
+      array.each do |card|
+        data.append_int8(card.suit)
+        data.append_int8(card.value)
+      end
+    end
+  end
+  
+  def self.cardsFromData(data, atOffset:offset)
+    count = Pointer.new(:char)
+    cards = NSMutableDictionary.dictionaryWithCapacity(4)
+    
+    while(offset < data.length)
+      peer_id = data.string_offset(offset, bytesRead:count)
+      offset += count[0]
+      
+      number_of_cards = data.int8_offset(offset)
+      offset += 1
+      
+      cards_array = NSMutableArray.arrayWithCapacity(number_of_cards)
+      number_of_cards.times do |t|
+        suit = data.int8_offset(offset)
+        offset += 1
+        
+        value = data.int8_offset(offset)
+        offset += 1        
+        cards_array << Card.alloc.initWithSuit(suit, value:value)
+      end
+      cards[peer_id] = cards_array
+    end
+    cards
   end
 end

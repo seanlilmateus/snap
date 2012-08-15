@@ -7,11 +7,11 @@ class JoinViewController < UIViewController
 
   def viewDidLoad
     super
-    @heading_label.font   = Game::Theme.snap_font(24.0)
-    @name_label.font      = Game::Theme.snap_font(16.0)
-    @status_label.font    = Game::Theme.snap_font(16.0)
-    @wait_label.font      = Game::Theme.snap_font(18.0)
-    @name_text_field.font = Game::Theme.snap_font(20.0)
+    @heading_label.font   = TheGame::Theme.snap_font(24.0)
+    @name_label.font      = TheGame::Theme.snap_font(16.0)
+    @status_label.font    = TheGame::Theme.snap_font(16.0)
+    @wait_label.font      = TheGame::Theme.snap_font(18.0)
+    @name_text_field.font = TheGame::Theme.snap_font(20.0)
     
     gesture_recognizer = UITapGestureRecognizer.alloc.initWithTarget(@name_text_field, action:'resignFirstResponder')
     gesture_recognizer.cancelsTouchesInView = false

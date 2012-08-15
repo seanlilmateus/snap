@@ -1,5 +1,5 @@
 class MatchClient
-  include Game::ClientState
+  include TheGame::ClientState
   
   attr_accessor :availables_servers, :session, :session_id, :client_state, :delegate
   
